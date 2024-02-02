@@ -6,12 +6,6 @@ import requests
 toponym = input().split()
 
 
-def load_image(name):
-    fullname = os.path.join('data', name)
-    image = pygame.image.load(fullname)
-    return image
-
-
 map_request = "https://static-maps.yandex.ru/1.x/"
 
 map_params = {
