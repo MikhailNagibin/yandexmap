@@ -1,6 +1,5 @@
 import pygame
 import sys
-from io import BytesIO
 import os
 import requests
 
@@ -13,14 +12,21 @@ def load_image(name):
     return image
 
 
-map_request = f"https://static-maps.yandex.ru/1.x/?ll={toponym[0]},{toponym[1]}&spn=0.005,0.005&scale=1&l=map"
+map_request = "https://static-maps.yandex.ru/1.x/"
 
-print(map_request)
-response = requests.get(map_request)
+map_params = {
+    "ll": ",".join([toponym[0], toponym[1]]),
+    "spn": ",".join(['0.005', '0.005']),
+    "l": "map"
+}
+
+
+response = requests.get(map_request, params=map_params)
 if not response:
 
     print("Ошибка выполнения запроса:")
     print(map_request)
+
     print("Http статус:", response.status_code, "(", response.reason, ")")
     sys.exit(1)
 
