@@ -1,37 +1,40 @@
 import pygame
 import sys
 import os
-import requests
+from Functions import get
 
 toponym = input().split()
 
 
 map_request = "https://static-maps.yandex.ru/1.x/"
-
 map_params = {
     "ll": ",".join([toponym[0], toponym[1]]),
     "spn": ",".join(['0.005', '0.005']),
-    "l": "map"
+    "l": "map",
+    "scale": '1.0'
 }
 
 
-response = requests.get(map_request, params=map_params)
-if not response:
+response = get(map_params)
 
-    print("Ошибка выполнения запроса:")
-    print(map_request)
-
-    print("Http статус:", response.status_code, "(", response.reason, ")")
-    sys.exit(1)
-
-map_file = "map.png"
-with open(map_file, "wb") as file:
-    file.write(response.content)
 
 pygame.init()
 screen = pygame.display.set_mode((600, 450))
-screen.blit(pygame.image.load(map_file), (0, 0))
+screen.blit(pygame.image.load("map.png"), (0, 0))
 pygame.display.flip()
-while pygame.event.wait().type != pygame.QUIT:
-    pass
-pygame.quit()
+ranning = True
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if map_params['scale'] != '4.0' and event.key == pygame.K_w:
+                map_params['scale'] = str(float(map_params['scale']) + 0.5)
+                print(map_params['scale'])
+            elif map_params['scale'] != '1.0' and event.key == pygame.K_s:
+                map_params['scale'] = str(float(map_params['scale']) - 0.5)
+                print(map_params['scale'])
+            response = get(map_params)
+            screen.blit(pygame.image.load("map.png"), (0, 0))
+    pygame.display.flip()
+#37.547746 55.913202
